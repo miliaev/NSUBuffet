@@ -1,0 +1,5 @@
+bulochka|15|20|1
+hleb|100|2|2
+chay|1000|5|1
+tvorog|7|50|2
+moloko|17|20|2
