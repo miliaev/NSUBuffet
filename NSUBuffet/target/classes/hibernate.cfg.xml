@@ -4,8 +4,10 @@
     "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
   <session-factory>
-    <property name="connection.url">jdbc:sqlite:/Users/milyaev/Downloads/NSUBuffet_Database-3.db</property>
+    <property name="connection.url">jdbc:sqlite:/NSUBuffet_Database-3.db</property>
     <property name="connection.driver_class">org.sqlite.JDBC</property>
+   <!-- <property name="hbm2ddl.auto">update</property>-->
+    <property name="hibernate.dialect">SQLiteDialect</property>
     <mapping class="entities.BuffetEntity"/>
     <mapping class="entities.BuffetsAssortmentEntity"/>
     <mapping class="entities.CategoryEntity"/>
@@ -19,6 +21,5 @@
     <!-- <property name="connection.password"/> -->
 
     <!-- DB schema will be updated if needed -->
-    <!-- <property name="hbm2ddl.auto">update</property> -->
   </session-factory>
 </hibernate-configuration>

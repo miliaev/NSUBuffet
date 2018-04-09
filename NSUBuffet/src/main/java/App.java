@@ -1,6 +1,7 @@
 import java.util.List;
 import java.util.Properties;
 
+import entities.BuffetEntity;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -42,7 +43,8 @@ public class App {
 
 
             // Fetching saved data
-            session.createQuery("from BuffetEntity ").toString();
+            List<BuffetEntity> buffetEntities = session.createQuery("from BuffetEntity ").list();
+            buffetEntities.toString();
 
 
         } catch (Exception ex) {
