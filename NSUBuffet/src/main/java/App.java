@@ -2,10 +2,7 @@ import java.util.List;
 import java.util.Properties;
 
 import entities.BuffetEntity;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
+import org.hibernate.*;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.ServiceRegistryBuilder;
@@ -42,9 +39,22 @@ public class App {
             tx = session.beginTransaction();
 
 
+            /*BuffetEntity buffetEntity = new BuffetEntity();
+            buffetEntity.setBuffetId((short) 5);
+            buffetEntity.setLocation("TEST IT ");
+
+            session.save(buffetEntity);
+
+            session.getTransaction().commit();*/
+
             // Fetching saved data
-            List<BuffetEntity> buffetEntities = session.createQuery("from BuffetEntity ").list();
-            buffetEntities.toString();
+            System.out.println("Get data from table...");
+            Query query = session.createQuery("from BuffetEntity");
+            List list = query.list();
+            for(Object buffetEntity: list)
+            {
+                System.out.println(((BuffetEntity) buffetEntity).getLocation());
+            }
 
 
         } catch (Exception ex) {
