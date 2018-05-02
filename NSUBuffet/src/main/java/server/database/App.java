@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Properties;
 
 import entities.BuffetEntity;
+import entities.OrdersEntity;
+import entities.PriceEntity;
 import org.hibernate.*;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
@@ -41,13 +43,13 @@ public class App {
             session = sessionFactory.openSession();
             tx = session.beginTransaction();
 
-            /*BuffetEntity buffetEntity = new BuffetEntity();
-            buffetEntity.setBuffetId((short) 5);
-            buffetEntity.setLocation("TEST IT ");
+            OrdersEntity ordersEntity = new OrdersEntity();
+            ordersEntity.setOrderId(1);
+            ordersEntity.setItemId(2);
 
-            session.save(buffetEntity);
+            session.save(ordersEntity);
 
-            session.getTransaction().commit();*/
+            session.getTransaction().commit();
 
             // Fetching saved data
             System.out.println("Get data from table...");
