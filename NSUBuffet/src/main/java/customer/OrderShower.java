@@ -174,6 +174,7 @@ public class OrderShower
                                         buySomething = true;
                                         order.setPrice(order.getPrice() + productInfos.get(i).getPrice() * currentHowMany);
                                         order.getOrderItems().put(products.get(i), currentHowMany);
+                                        order.getItemsPrice().put(products.get(i), productInfos.get(i).getPrice() * currentHowMany);
                                     }
                                 } catch (NumberFormatException ex)
                                 {

@@ -7,6 +7,7 @@ import java.util.UUID;
 
 public class Order implements Serializable{
     private HashMap<String, Integer> orderItems = new HashMap<>();
+    private HashMap<String, Double> itemsPrice = new HashMap<>();
     private int id;
     private Integer buffetID;
     private Date time;
@@ -14,6 +15,11 @@ public class Order implements Serializable{
 
     public HashMap<String, Integer> getOrderItems() {
         return orderItems;
+    }
+
+    public HashMap<String, Double> getItemsPrice()
+    {
+        return itemsPrice;
     }
 
     public Integer getBuffetID() {
