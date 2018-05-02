@@ -4,19 +4,20 @@
     "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
   <session-factory>
-    <property name="connection.url">jdbc:sqlite:./src/main/resources/NSUBuffet_Database.db</property>
+    <property name="connection.url">jdbc:sqlite:D:\DataBase\NSUBuffet\NSUBuffet\src\main\resources\NSUBuffet_Database.db</property>
     <property name="connection.driver_class">org.sqlite.JDBC</property>
    <!-- <property name="hbm2ddl.auto">update</property>-->
-    <property name="hibernate.dialect">database.SQLiteDialect</property>
+    <property name="hibernate.dialect">server.database.SQLiteDialect</property>
     <mapping class="entities.BuffetEntity"/>
     <mapping class="entities.BuffetsAssortmentEntity"/>
     <mapping class="entities.CategoryEntity"/>
     <mapping class="entities.CurrentOrdersEntity"/>
     <mapping class="entities.ItemStatisticEntity"/>
     <mapping class="entities.ItemsEntity"/>
-    <mapping class="entities.OrderEntity"/>
+    <mapping class="entities.OrdersEntity"/>
     <mapping class="entities.PairStatisticEntity"/>
     <mapping class="entities.PriceEntity"/>
+
     <!-- <property name="connection.username"/> -->
     <!-- <property name="connection.password"/> -->
 

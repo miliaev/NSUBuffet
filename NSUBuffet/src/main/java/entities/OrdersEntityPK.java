@@ -5,21 +5,21 @@ import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class BuffetsAssortmentEntityPK implements Serializable
+public class OrdersEntityPK implements Serializable
 {
-    private Integer buffetId;
+    private Integer orderId;
     private Integer itemId;
 
-    @Column(name = "buffet_id", nullable = true)
+    @Column(name = "order_id", nullable = true)
     @Id
-    public Integer getBuffetId()
+    public Integer getOrderId()
     {
-        return buffetId;
+        return orderId;
     }
 
-    public void setBuffetId(Integer buffetId)
+    public void setOrderId(Integer orderId)
     {
-        this.buffetId = buffetId;
+        this.orderId = orderId;
     }
 
     @Column(name = "item_id", nullable = true)
@@ -39,8 +39,8 @@ public class BuffetsAssortmentEntityPK implements Serializable
     {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        BuffetsAssortmentEntityPK that = (BuffetsAssortmentEntityPK) o;
-        return Objects.equals(buffetId, that.buffetId) &&
+        OrdersEntityPK that = (OrdersEntityPK) o;
+        return Objects.equals(orderId, that.orderId) &&
                 Objects.equals(itemId, that.itemId);
     }
 
@@ -48,6 +48,6 @@ public class BuffetsAssortmentEntityPK implements Serializable
     public int hashCode()
     {
 
-        return Objects.hash(buffetId, itemId);
+        return Objects.hash(orderId, itemId);
     }
 }

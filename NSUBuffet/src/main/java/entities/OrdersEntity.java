@@ -4,24 +4,25 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "BuffetsAssortment", schema = "main", catalog = "")
-@IdClass(BuffetsAssortmentEntityPK.class)
-public class BuffetsAssortmentEntity
+@Table(name = "Orders", schema = "main", catalog = "")
+@IdClass(OrdersEntityPK.class)
+public class OrdersEntity
 {
-    private Integer buffetId;
+    private Integer orderId;
     private Integer itemId;
     private Integer amount;
+    private Double price;
 
     @Id
-    @Column(name = "buffet_id", nullable = true)
-    public Integer getBuffetId()
+    @Column(name = "order_id", nullable = true)
+    public Integer getOrderId()
     {
-        return buffetId;
+        return orderId;
     }
 
-    public void setBuffetId(Integer buffetId)
+    public void setOrderId(Integer orderId)
     {
-        this.buffetId = buffetId;
+        this.orderId = orderId;
     }
 
     @Id
@@ -48,21 +49,34 @@ public class BuffetsAssortmentEntity
         this.amount = amount;
     }
 
+    @Basic
+    @Column(name = "price", nullable = true, precision = 0)
+    public Double getPrice()
+    {
+        return price;
+    }
+
+    public void setPrice(Double price)
+    {
+        this.price = price;
+    }
+
     @Override
     public boolean equals(Object o)
     {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        BuffetsAssortmentEntity that = (BuffetsAssortmentEntity) o;
-        return Objects.equals(buffetId, that.buffetId) &&
+        OrdersEntity that = (OrdersEntity) o;
+        return Objects.equals(orderId, that.orderId) &&
                 Objects.equals(itemId, that.itemId) &&
-                Objects.equals(amount, that.amount);
+                Objects.equals(amount, that.amount) &&
+                Objects.equals(price, that.price);
     }
 
     @Override
     public int hashCode()
     {
 
-        return Objects.hash(buffetId, itemId, amount);
+        return Objects.hash(orderId, itemId, amount, price);
     }
 }

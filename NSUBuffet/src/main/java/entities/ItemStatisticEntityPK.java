@@ -5,10 +5,11 @@ import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class PriceEntityPK implements Serializable
+public class ItemStatisticEntityPK implements Serializable
 {
     private Integer itemId;
-    private Double price;
+    private Integer count;
+    private Integer buffetId;
     private String date;
 
     @Column(name = "item_id", nullable = true)
@@ -23,16 +24,28 @@ public class PriceEntityPK implements Serializable
         this.itemId = itemId;
     }
 
-    @Column(name = "price", nullable = true, precision = 0)
+    @Column(name = "count", nullable = true)
     @Id
-    public Double getPrice()
+    public Integer getCount()
     {
-        return price;
+        return count;
     }
 
-    public void setPrice(Double price)
+    public void setCount(Integer count)
     {
-        this.price = price;
+        this.count = count;
+    }
+
+    @Column(name = "buffet_id", nullable = true)
+    @Id
+    public Integer getBuffetId()
+    {
+        return buffetId;
+    }
+
+    public void setBuffetId(Integer buffetId)
+    {
+        this.buffetId = buffetId;
     }
 
     @Column(name = "date", nullable = true)
@@ -52,9 +65,10 @@ public class PriceEntityPK implements Serializable
     {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PriceEntityPK that = (PriceEntityPK) o;
+        ItemStatisticEntityPK that = (ItemStatisticEntityPK) o;
         return Objects.equals(itemId, that.itemId) &&
-                Objects.equals(price, that.price) &&
+                Objects.equals(count, that.count) &&
+                Objects.equals(buffetId, that.buffetId) &&
                 Objects.equals(date, that.date);
     }
 
@@ -62,6 +76,6 @@ public class PriceEntityPK implements Serializable
     public int hashCode()
     {
 
-        return Objects.hash(itemId, price, date);
+        return Objects.hash(itemId, count, buffetId, date);
     }
 }

@@ -1,4 +1,4 @@
-package database;
+package server.database;
 
 import java.util.List;
 import java.util.Properties;
@@ -17,7 +17,8 @@ public class App {
     private static SessionFactory sessionFactory = null;
     private static ServiceRegistry serviceRegistry = null;
 
-    private static SessionFactory configureSessionFactory() throws HibernateException {
+    private static SessionFactory configureSessionFactory() throws HibernateException
+    {
         Configuration configuration = new Configuration();
         configuration.configure();
 
@@ -40,7 +41,6 @@ public class App {
             session = sessionFactory.openSession();
             tx = session.beginTransaction();
 
-
             /*BuffetEntity buffetEntity = new BuffetEntity();
             buffetEntity.setBuffetId((short) 5);
             buffetEntity.setLocation("TEST IT ");
@@ -59,14 +59,18 @@ public class App {
             }
 
 
-        } catch (Exception ex) {
+        }
+        catch (Exception ex)
+        {
             ex.printStackTrace();
 
             // Rolling back the changes to make the data consistent in case of any failure 
-            // in between multiple database write operations.
+            // in between multiple server.database write operations.
             tx.rollback();
-        } finally{
-            if(session != null) {
+        } finally
+        {
+            if(session != null)
+            {
                 session.close();
             }
         }

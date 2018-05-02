@@ -1,50 +1,81 @@
 package entities;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
-@Table(name = "Current Orders", schema = "main", catalog = "")
-public class CurrentOrdersEntity {
-    private Short orderId;
+@Table(name = "CurrentOrders", schema = "main", catalog = "")
+public class CurrentOrdersEntity
+{
+    private Integer orderId;
+    private Integer buffetId;
     private String date;
+    private String status;
 
     @Id
     @Column(name = "order_id", nullable = true)
-    public Short getOrderId() {
+    public Integer getOrderId()
+    {
         return orderId;
     }
 
-    public void setOrderId(Short orderId) {
+    public void setOrderId(Integer orderId)
+    {
         this.orderId = orderId;
     }
 
     @Basic
+    @Column(name = "buffet_id", nullable = true)
+    public Integer getBuffetId()
+    {
+        return buffetId;
+    }
+
+    public void setBuffetId(Integer buffetId)
+    {
+        this.buffetId = buffetId;
+    }
+
+    @Basic
     @Column(name = "date", nullable = true)
-    public String getDate() {
+    public String getDate()
+    {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(String date)
+    {
         this.date = date;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    @Basic
+    @Column(name = "status", nullable = true, length = -1)
+    public String getStatus()
+    {
+        return status;
+    }
 
-        CurrentOrdersEntity that = (CurrentOrdersEntity) o;
-
-        if (orderId != null ? !orderId.equals(that.orderId) : that.orderId != null) return false;
-        if (date != null ? !date.equals(that.date) : that.date != null) return false;
-
-        return true;
+    public void setStatus(String status)
+    {
+        this.status = status;
     }
 
     @Override
-    public int hashCode() {
-        int result = orderId != null ? orderId.hashCode() : 0;
-        result = 31 * result + (date != null ? date.hashCode() : 0);
-        return result;
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CurrentOrdersEntity that = (CurrentOrdersEntity) o;
+        return Objects.equals(orderId, that.orderId) &&
+                Objects.equals(buffetId, that.buffetId) &&
+                Objects.equals(date, that.date) &&
+                Objects.equals(status, that.status);
+    }
+
+    @Override
+    public int hashCode()
+    {
+
+        return Objects.hash(orderId, buffetId, date, status);
     }
 }
