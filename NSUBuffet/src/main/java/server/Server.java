@@ -1,12 +1,6 @@
 package server;
 
 import abstractServer.AbstractServer;
-import builder.RequestBuilder;
-import org.hibernate.HibernateException;
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
-import org.hibernate.service.ServiceRegistry;
-import org.hibernate.service.ServiceRegistryBuilder;
 import parser.Parser;
 
 import java.io.IOException;
@@ -16,32 +10,16 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Properties;
 
 public class Server implements AbstractServer {
     private ArrayList<Parser> parsers;
     private ServerSocket serverSocket;
     private HashMap<Integer, ObjectOutputStream> buffetOutputStreams;
 
-    private static SessionFactory sessionFactory;
-    private static ServiceRegistry serviceRegistry;
-
     public Server(ArrayList<Parser> parsers) {
         this.parsers = parsers;
-        configureSessionFactory();
+        SessionFactorySingleton.getInstance();
     }
-
-    private void configureSessionFactory() throws HibernateException
-    {
-        Configuration configuration = new Configuration();
-        configuration.configure();
-
-        Properties properties = configuration.getProperties();
-
-        serviceRegistry = new ServiceRegistryBuilder().applySettings(properties).buildServiceRegistry();
-        sessionFactory = configuration.buildSessionFactory(serviceRegistry);
-    }
-
 
     public class ClientHandler implements Runnable {
         ObjectInputStream reader;
