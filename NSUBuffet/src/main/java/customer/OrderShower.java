@@ -207,7 +207,7 @@ public class OrderShower
     {
         try
         {
-            if (Integer.parseInt(hours.getText()) > 8 && Integer.parseInt(hours.getText()) < 19 &&
+            if (Integer.parseInt(hours.getText()) > 8 && Integer.parseInt(hours.getText()) < 23 &&
                     Integer.parseInt(minutes.getText()) >= 0 && Integer.parseInt(minutes.getText()) <= 59)
             {
                 Date currentDate = new Date();

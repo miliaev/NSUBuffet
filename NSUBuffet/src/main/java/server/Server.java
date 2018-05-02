@@ -2,7 +2,7 @@ package server;
 
 import abstractServer.AbstractServer;
 import parser.Parser;
-import server.database.SessionFactorySingleton;
+import database.SessionFactorySingleton;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

@@ -1,4 +1,4 @@
-package server.database; /**
+package database; /**
  * Created by Mike on 09.04.2018.
  */
 import java.sql.Types;
@@ -177,17 +177,17 @@ public class SQLiteDialect extends Dialect {
     }
 
     public String getDropForeignKeyString() {
-        throw new UnsupportedOperationException("No drop foreign key syntax supported by server.database.SQLiteDialect");
+        throw new UnsupportedOperationException("No drop foreign key syntax supported by database.SQLiteDialect");
     }
 
     public String getAddForeignKeyConstraintString(String constraintName,
                                                    String[] foreignKey, String referencedTable, String[] primaryKey,
                                                    boolean referencesPrimaryKey) {
-        throw new UnsupportedOperationException("No add foreign key syntax supported by server.database.SQLiteDialect");
+        throw new UnsupportedOperationException("No add foreign key syntax supported by database.SQLiteDialect");
     }
 
     public String getAddPrimaryKeyConstraintString(String constraintName) {
-        throw new UnsupportedOperationException("No add primary key syntax supported by server.database.SQLiteDialect");
+        throw new UnsupportedOperationException("No add primary key syntax supported by database.SQLiteDialect");
     }
 
     public boolean supportsIfExistsBeforeTableName() {

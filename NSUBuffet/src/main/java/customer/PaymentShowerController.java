@@ -49,10 +49,10 @@ public class PaymentShowerController
         writer.writeObject(order);
         writer.flush();
 
-        writer.writeObject(requestBuilder.updateCurrentAssortment());
-        writer.flush();
-        writer.writeObject(order);
-        writer.flush();
+//        writer.writeObject(requestBuilder.updateCurrentAssortment());
+//        writer.flush();
+//        writer.writeObject(order);
+//        writer.flush();
 
         orderShowerController.addNewOrder(currentID, order);
         return currentID;

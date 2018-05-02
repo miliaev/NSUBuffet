@@ -1,9 +1,5 @@
-package server.database;
+package database;
 
-import java.util.List;
-
-import entities.BuffetEntity;
-import org.hibernate.*;
 import server.CurrentAssortment;
 
 /**
