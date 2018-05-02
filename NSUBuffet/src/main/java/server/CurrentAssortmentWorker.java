@@ -1,14 +1,24 @@
 package server;
 
 import builder.Builder;
+import entities.BuffetsAssortmentEntity;
+import entities.ItemsEntity;
 import order.Order;
+import order.ProductInfo;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import parser.Parser;
+import server.database.SessionFactorySingleton;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class CurrentAssortmentWorker implements Parser {
 
@@ -21,20 +31,57 @@ public class CurrentAssortmentWorker implements Parser {
 
     public CurrentAssortmentWorker(Builder requestBuilder) {
         this.requestBuilder = requestBuilder;
-        this.currentAssortment = new CurrentAssortment("src/main/java/currentAssortment.txt");
+        this.currentAssortment = new CurrentAssortment();
         this.commands.put(requestBuilder.getCurrentItems(), this::getCurrentItems);
         this.commands.put(requestBuilder.updateCurrentAssortment(), this::updateCurrentAssortment);
     }
 
     private void getCurrentItems() {
         try {
-            //ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
             Object object = reader.readObject();
             Integer buffetId = (Integer) object;
             System.out.println(buffetId);
-            //ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-            System.out.println(currentAssortment.getCurrentItems(buffetId - 1).toString());
-            writer.writeObject(currentAssortment.getCurrentItems(buffetId - 1));
+//            System.out.println(currentAssortment.getCurrentItems(buffetId - 1).toString());
+            HashMap<String, ProductInfo> assortment = new HashMap<>();
+            SessionFactory sessionFactory = SessionFactorySingleton.getInstance().getSessionFactory();
+
+            Session session = null;
+            Transaction tx = null;
+
+            try {
+                session = sessionFactory.openSession();
+                tx = session.beginTransaction();
+
+                // Fetching saved data
+                System.out.println("Get data from table...");
+                Query query = session.createQuery("from BuffetsAssortmentEntity where buffetId= :buffetId");
+                query.setParameter("buffetId", buffetId);
+                List buffetsAssortmentList = query.list();
+                for (Object buffetsAssortment : buffetsAssortmentList) {
+                    BuffetsAssortmentEntity buffetsAssortmentEntity = ((BuffetsAssortmentEntity) buffetsAssortment);
+                    query = session.createQuery("from ItemsEntity where itemId= :itemId");
+                    query.setParameter("itemId", buffetsAssortmentEntity.getItemId());
+                    List itemsList = query.list();
+                    for (Object item : itemsList) {
+                        ItemsEntity itemsEntity = ((ItemsEntity) item);
+                        String key = itemsEntity.getName();
+                        Integer amount = buffetsAssortmentEntity.getAmount();
+                        Double price = itemsEntity.getCurrentPrice();
+                        assortment.put(key, new ProductInfo(price, amount));
+                    }
+                }
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+
+                tx.rollback();
+            } finally {
+                if (session != null) {
+                    session.close();
+                }
+            }
+            System.out.println(assortment.toString());
+            writer.writeObject(assortment);
             writer.reset();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
