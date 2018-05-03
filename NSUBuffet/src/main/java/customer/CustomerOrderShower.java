@@ -112,6 +112,7 @@ public class CustomerOrderShower
                 {
                     try
                     {
+                        frame.setVisible(false);
                         customerOrderShowerController.onValidateButtonClick(ID);
                     }
                     catch (IOException e1)
