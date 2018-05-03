@@ -16,7 +16,10 @@ import database.SessionFactorySingleton;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 public class CurrentOrdersWorker implements Parser {
 
@@ -65,7 +68,8 @@ public class CurrentOrdersWorker implements Parser {
             CurrentOrdersEntity currentOrdersEntity = new CurrentOrdersEntity();
             currentOrdersEntity.setOrderId(order.getId());
             currentOrdersEntity.setBuffetId(order.getBuffetID());
-            currentOrdersEntity.setDate(order.getTime().toString());
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-M-yyyy hh:mm");
+            currentOrdersEntity.setDate(dateFormat.format(order.getTime()));
 //            currentOrdersEntity.setStatus(null);
             session.save(currentOrdersEntity);
 //            session.getTransaction().commit();
@@ -77,13 +81,13 @@ public class CurrentOrdersWorker implements Parser {
                 ordersEntity.setPrice(order.getItemsPrice().get(itemName));
                 Query query = session.createQuery("from ItemsEntity where name= :name");
                 query.setParameter("name", itemName);
-                ordersEntity.setItemId(((ItemsEntity)query.list().get(0)).getItemId());
+                ordersEntity.setItemId(((ItemsEntity) query.list().get(0)).getItemId());
                 session.save(ordersEntity);
 //                session.getTransaction().commit();
             }
             currentOrdersEntity.setStatus("ready");
             session.getTransaction().commit();
-//            buffetOutputStreams.get(order.getBuffetID() - 1).writeObject(new RequestBuilder().needUpdateView());
+            buffetOutputStreams.get(order.getBuffetID() - 1).writeObject(new RequestBuilder().needUpdateView());
         } catch (Exception ex) {
             ex.printStackTrace();
 
@@ -97,25 +101,72 @@ public class CurrentOrdersWorker implements Parser {
     }
 
     private void getOrderByID() {
+        SessionFactory sessionFactory = SessionFactorySingleton.getInstance().getSessionFactory();
+
+        Session session = null;
+        Transaction tx = null;
+
         try {
+            session = sessionFactory.openSession();
+            tx = session.beginTransaction();
+
             int orderID = reader.readInt();
-            writer.writeObject(currentOrders.getOrderByID(orderID));
-        } catch (IOException e) {
-            e.printStackTrace();
+            Query query = session.createQuery("from CurrentOrdersEntity where orderId= :orderId");
+            query.setParameter("orderId", orderID);
+            Order order = new Order();
+            order.setId(orderID);
+            CurrentOrdersEntity currentOrdersEntity = ((CurrentOrdersEntity) query.list().get(0));
+            order.setBuffetID(currentOrdersEntity.getBuffetId());
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-M-yyyy hh:mm");
+            order.setTime(dateFormat.parse(currentOrdersEntity.getDate()));
+            query = session.createQuery("from OrdersEntity where orderId= :orderId");
+            query.setParameter("orderId", orderID);
+            List<OrdersEntity> orders = query.list();
+            for (OrdersEntity ordersEntity : orders) {
+                query = session.createQuery("from ItemsEntity where itemId= :itemId");
+                query.setParameter("itemId", ordersEntity.getItemId());
+                order.getOrderItems().put(((ItemsEntity) query.list().get(0)).getName(), ordersEntity.getAmount());
+                order.getItemsPrice().put(((ItemsEntity) query.list().get(0)).getName(), ordersEntity.getPrice());
+            }
+            writer.writeObject(order);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+
+            tx.rollback();
+        } finally {
+            if (session != null) {
+                session.close();
+            }
         }
     }
 
     private void deleteOrderByID() {
-        try {
-            int orderID = reader.readInt();
-            Order order = currentOrders.getOrderByID(orderID);
-            buffetOutputStreams.get(order.getBuffetID() - 1).writeObject(new RequestBuilder().needUpdateView());
-            currentOrders.deleteOrderByID(orderID);
-            buffetOutputStreams.get(order.getBuffetID() - 1).writeObject(currentOrders.getCurrentOrders(order.getBuffetID() - 1));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        SessionFactory sessionFactory = SessionFactorySingleton.getInstance().getSessionFactory();
 
+        Session session = null;
+        Transaction tx = null;
+
+        try {
+            session = sessionFactory.openSession();
+            tx = session.beginTransaction();
+
+            int orderID = reader.readInt();
+            Query query = session.createQuery("from CurrentOrdersEntity where orderId= :orderId");
+            query.setParameter("orderId", orderID);
+            CurrentOrdersEntity currentOrdersEntity = ((CurrentOrdersEntity) query.list().get(0));
+            query = session.createQuery("delete from CurrentOrdersEntity where orderId= :orderId");
+            query.setParameter("orderId", orderID);
+            session.getTransaction().commit();
+            buffetOutputStreams.get(currentOrdersEntity.getBuffetId() - 1).writeObject(new RequestBuilder().needUpdateView());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+
+            tx.rollback();
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
     }
 
     @Override
