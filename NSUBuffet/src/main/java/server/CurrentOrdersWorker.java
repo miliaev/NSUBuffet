@@ -153,12 +153,15 @@ public class CurrentOrdersWorker implements Parser {
             int orderID = reader.readInt();
             Query query = session.createQuery("from CurrentOrdersEntity where orderId= :orderId");
             query.setParameter("orderId", orderID);
-            CurrentOrdersEntity currentOrdersEntity = ((CurrentOrdersEntity) query.list().get(0));
-            query = session.createQuery("from CurrentOrdersEntity where orderId= :orderId");
+            int buffetId = ((CurrentOrdersEntity) query.list().get(0)).getBuffetId();
+            query = session.createQuery("delete from CurrentOrdersEntity where orderId= :orderId");
             query.setParameter("orderId", orderID);
-            session.delete(query.list().get(0));
+            if (query.executeUpdate() > 0) {
+                System.out.println("deleted");
+            }
+//            session.delete(query.list().get(0));
             session.getTransaction().commit();
-//            buffetOutputStreams.get(currentOrdersEntity.getBuffetId() - 1).writeObject(new RequestBuilder().needUpdateView());
+            buffetOutputStreams.get(buffetId - 1).writeObject(new RequestBuilder().needUpdateView());
         } catch (Exception ex) {
             ex.printStackTrace();
 
