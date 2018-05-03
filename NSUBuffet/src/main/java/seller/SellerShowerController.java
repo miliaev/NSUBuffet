@@ -105,13 +105,13 @@ public class SellerShowerController
                 query.setParameter("orderId", orderId);
                 List currentOrder = query.list();
                 Order order = new Order();
+                order.setBuffetID(buffetID);
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd-M-yyyy hh:mm");
+                order.setTime(dateFormat.parse(currentOrdersEntity.getDate()));
                 for(int j = 0; j < currentOrder.size(); j++)
                 {
                     OrdersEntity ordersEntity = (OrdersEntity) currentOrder.get(j);
-                    order.setBuffetID(buffetID);
                     order.setId(ordersEntity.getOrderId());
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-M-yyyy hh:mm");
-                    order.setTime(dateFormat.parse(currentOrdersEntity.getDate()));
                     order.setPrice(order.getPrice() + ordersEntity.getPrice());
                     query = session.createQuery("from ItemsEntity where itemId= :itemId");
                     query.setParameter("itemId", ordersEntity.getItemId());
