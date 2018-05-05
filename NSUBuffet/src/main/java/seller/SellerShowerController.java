@@ -82,57 +82,16 @@ public class SellerShowerController
 
     public void needUpdateView()
     {
-        orders = new ArrayList<>();
-
-        SessionFactory sessionFactory = SessionFactorySingleton.getInstance().getSessionFactory();
-
-        Session session = null;
-        Transaction tx = null;
-
         try
         {
-            session = sessionFactory.openSession();
-            tx = session.beginTransaction();
+            orders = (ArrayList<Order>)reader.readObject();
+            sellerShower.updateView(orders);
 
-            Query query = session.createQuery("from CurrentOrdersEntity where buffetId= :buffetId");
-            query.setParameter("buffetId", buffetID);
-            List allOrders = query.list();
-            for(int i = 0; i < allOrders.size(); i++)
-            {
-                CurrentOrdersEntity currentOrdersEntity = (CurrentOrdersEntity) allOrders.get(i);
-                int orderId  = currentOrdersEntity.getOrderId();
-                query = session.createQuery("from OrdersEntity where orderId= :orderId");
-                query.setParameter("orderId", orderId);
-                List currentOrder = query.list();
-                Order order = new Order();
-                order.setBuffetID(buffetID);
-                SimpleDateFormat dateFormat = new SimpleDateFormat("dd-M-yyyy hh:mm");
-                order.setTime(dateFormat.parse(currentOrdersEntity.getDate()));
-                for(int j = 0; j < currentOrder.size(); j++)
-                {
-                    OrdersEntity ordersEntity = (OrdersEntity) currentOrder.get(j);
-                    order.setId(ordersEntity.getOrderId());
-                    order.setPrice(order.getPrice() + ordersEntity.getPrice());
-                    query = session.createQuery("from ItemsEntity where itemId= :itemId");
-                    query.setParameter("itemId", ordersEntity.getItemId());
-                    ItemsEntity itemsEntity = (ItemsEntity) query.list().get(0);
-                    order.getItemsPrice().put(itemsEntity.getName(), ordersEntity.getPrice());
-                    order.getOrderItems().put(itemsEntity.getName(), ordersEntity.getAmount());
-                }
-                orders.add(order);
-
-            }
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-
-            tx.rollback();
-        } finally {
-            if (session != null) {
-                session.close();
-            }
         }
-        sellerShower.updateView(orders);
+        catch (IOException | ClassNotFoundException e)
+        {
+            e.printStackTrace();
+        }
     }
 
 

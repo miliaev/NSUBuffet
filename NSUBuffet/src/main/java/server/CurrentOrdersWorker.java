@@ -2,6 +2,7 @@ package server;
 
 import builder.Builder;
 import builder.RequestBuilder;
+import com.sun.tools.corba.se.idl.constExpr.Or;
 import entities.CurrentOrdersEntity;
 import entities.ItemsEntity;
 import entities.OrdersEntity;
@@ -16,7 +17,9 @@ import database.SessionFactorySingleton;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -86,8 +89,11 @@ public class CurrentOrdersWorker implements Parser {
 //                session.getTransaction().commit();
             }
             currentOrdersEntity.setStatus("ready");
+            ArrayList<Order> orders = getOrdersForBuffet(order.getBuffetID(), session);
             session.getTransaction().commit();
             buffetOutputStreams.get(order.getBuffetID() - 1).writeObject(new RequestBuilder().needUpdateView());
+            buffetOutputStreams.get(order.getBuffetID() - 1).writeObject(orders);
+
         } catch (Exception ex) {
             ex.printStackTrace();
 
@@ -98,6 +104,47 @@ public class CurrentOrdersWorker implements Parser {
             }
         }
 
+    }
+
+    private ArrayList<Order> getOrdersForBuffet(int buffetID, Session session)
+    {
+        ArrayList<Order> orders = new ArrayList<>();
+
+        Query query = session.createQuery("from CurrentOrdersEntity where buffetId= :buffetId");
+        query.setParameter("buffetId", buffetID);
+        List allOrders = query.list();
+        for (Object allOrder : allOrders)
+        {
+            CurrentOrdersEntity currentOrdersEntity = (CurrentOrdersEntity) allOrder;
+            int orderId = currentOrdersEntity.getOrderId();
+            query = session.createQuery("from OrdersEntity where orderId= :orderId");
+            query.setParameter("orderId", orderId);
+            List currentOrder = query.list();
+            Order order = new Order();
+            order.setBuffetID(buffetID);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-M-yyyy hh:mm");
+            try
+            {
+                order.setTime(dateFormat.parse(currentOrdersEntity.getDate()));
+            } catch (ParseException e)
+            {
+                e.printStackTrace();
+            }
+            for (Object aCurrentOrder : currentOrder)
+            {
+                OrdersEntity ordersEntity = (OrdersEntity) aCurrentOrder;
+                order.setId(ordersEntity.getOrderId());
+                order.setPrice(order.getPrice() + ordersEntity.getPrice());
+                query = session.createQuery("from ItemsEntity where itemId= :itemId");
+                query.setParameter("itemId", ordersEntity.getItemId());
+                ItemsEntity itemsEntity = (ItemsEntity) query.list().get(0);
+                order.getItemsPrice().put(itemsEntity.getName(), ordersEntity.getPrice());
+                order.getOrderItems().put(itemsEntity.getName(), ordersEntity.getAmount());
+            }
+            orders.add(order);
+
+        }
+        return  orders;
     }
 
     private void getOrderByID() {
@@ -160,8 +207,10 @@ public class CurrentOrdersWorker implements Parser {
                 System.out.println("deleted");
             }
 //            session.delete(query.list().get(0));
+            ArrayList<Order> orders = getOrdersForBuffet(buffetId, session);
             session.getTransaction().commit();
             buffetOutputStreams.get(buffetId - 1).writeObject(new RequestBuilder().needUpdateView());
+            buffetOutputStreams.get(buffetId - 1).writeObject(orders);
         } catch (Exception ex) {
             ex.printStackTrace();
 
