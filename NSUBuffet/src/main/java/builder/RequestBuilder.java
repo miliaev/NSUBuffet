@@ -25,10 +25,5 @@ public class RequestBuilder implements Builder {
     }
 
     @Override
-    public String updateCurrentAssortment() {
-        return "updateCurrentAssortment";
-    }
-
-    @Override
     public String needUpdateView() {return "needUpdateView"; }
 }

@@ -1,4 +1,4 @@
-package server;
+package server.workers;
 
 import builder.Builder;
 import entities.BuffetsAssortmentEntity;
@@ -20,7 +20,6 @@ import java.util.List;
 
 public class CurrentAssortmentWorker implements Parser {
 
-    private CurrentAssortment currentAssortment;
     private Builder requestBuilder;
     private ObjectInputStream reader;
     private ObjectOutputStream writer;
@@ -29,9 +28,7 @@ public class CurrentAssortmentWorker implements Parser {
 
     public CurrentAssortmentWorker(Builder requestBuilder) {
         this.requestBuilder = requestBuilder;
-        this.currentAssortment = new CurrentAssortment();
         this.commands.put(requestBuilder.getCurrentItems(), this::getCurrentItems);
-        this.commands.put(requestBuilder.updateCurrentAssortment(), this::updateCurrentAssortment);
     }
 
     private void getCurrentItems() {
@@ -86,17 +83,6 @@ public class CurrentAssortmentWorker implements Parser {
         }
     }
 
-    private void updateCurrentAssortment() {
-        try {
-            //ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
-            Object object = reader.readObject();
-            Order order = (Order) object;
-            //ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-            currentAssortment.updateCurrentAssortment(order);
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
 
     @Override
     public boolean parse(String request, ObjectInputStream reader, ObjectOutputStream writer, HashMap<Integer, ObjectOutputStream> buffets) {

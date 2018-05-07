@@ -5,6 +5,5 @@ public interface Builder {
     String getOrderByID();
     String deleteOrderByID();
     String addNewOrder();
-    String updateCurrentAssortment();
     String needUpdateView();
 }

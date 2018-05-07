@@ -1,4 +1,4 @@
-package server;
+package server.workers;
 
 import builder.Builder;
 import builder.RequestBuilder;
@@ -25,7 +25,6 @@ import java.util.List;
 
 public class CurrentOrdersWorker implements Parser {
 
-    private CurrentOrders currentOrders;
     private Builder requestBuilder;
     private ObjectInputStream reader;
     private ObjectOutputStream writer;
@@ -34,7 +33,6 @@ public class CurrentOrdersWorker implements Parser {
 
     public CurrentOrdersWorker(Builder requestBuilder) {
         this.requestBuilder = requestBuilder;
-        this.currentOrders = new CurrentOrders();
         this.commands.put(requestBuilder.addNewOrder(), this::addNewOrder);
         this.commands.put(requestBuilder.getOrderByID(), this::getOrderByID);
         this.commands.put(requestBuilder.deleteOrderByID(), this::deleteOrderByID);

@@ -1,4 +1,6 @@
-package server;
+package server.view;
+
+import server.view.ItemStatisticShower;
 
 import javax.swing.*;
 import java.awt.*;

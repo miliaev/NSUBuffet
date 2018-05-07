@@ -1,4 +1,4 @@
-package server;
+package server.view;
 
 import database.SessionFactorySingleton;
 import entities.*;
@@ -59,6 +59,7 @@ public class ItemStatisticShower
             }
 
             JTable table = new JTable(data, columnNames);
+            table.setEnabled(false);
             scrollPane = new JScrollPane(table);
 
         } catch (Exception ex) {
@@ -70,7 +71,7 @@ public class ItemStatisticShower
                 session.close();
             }
         }
-        
+
         frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
         frame.setSize(800,600);
         frame.setLocationRelativeTo(null);
