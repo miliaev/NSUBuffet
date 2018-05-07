@@ -10,6 +10,7 @@ public class Main {
         ArrayList<Parser> parsers = new ArrayList<>();
         parsers.add(new CurrentAssortmentWorker(new RequestBuilder()));
         parsers.add(new CurrentOrdersWorker(new RequestBuilder()));
+        new ServerShower();
         new Server(parsers).go();
     }
 }
