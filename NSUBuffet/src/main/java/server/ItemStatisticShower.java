@@ -17,9 +17,6 @@ public class ItemStatisticShower
     private JFrame frame = new JFrame();
     private JPanel mainPanel = new JPanel();
 
-    private JTextArea incoming;
-    private JTextField outgoing;
-
     public ItemStatisticShower()
     {
         JScrollPane scrollPane = new JScrollPane();
@@ -62,9 +59,8 @@ public class ItemStatisticShower
             }
 
             JTable table = new JTable(data, columnNames);
-            table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-            table.setPreferredSize(new Dimension(780, 500));
             scrollPane = new JScrollPane(table);
+
         } catch (Exception ex) {
             ex.printStackTrace();
 
@@ -74,8 +70,7 @@ public class ItemStatisticShower
                 session.close();
             }
         }
-
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
         frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
         frame.setSize(800,600);
         frame.setLocationRelativeTo(null);
