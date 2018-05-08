@@ -68,7 +68,7 @@ public class CurrentOrdersWorker implements Parser {
             CurrentOrdersEntity currentOrdersEntity = new CurrentOrdersEntity();
             currentOrdersEntity.setOrderId(order.getId());
             currentOrdersEntity.setBuffetId(order.getBuffetID());
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-M-yyyy hh:mm");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-M-yyyy HH:mm");
             currentOrdersEntity.setDate(dateFormat.format(order.getTime()));
 //            currentOrdersEntity.setStatus(null);
             session.save(currentOrdersEntity);
@@ -119,7 +119,7 @@ public class CurrentOrdersWorker implements Parser {
             List currentOrder = query.list();
             Order order = new Order();
             order.setBuffetID(buffetID);
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-M-yyyy hh:mm");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-M-yyyy HH:mm");
             try
             {
                 order.setTime(dateFormat.parse(currentOrdersEntity.getDate()));
@@ -161,7 +161,7 @@ public class CurrentOrdersWorker implements Parser {
             order.setId(orderID);
             CurrentOrdersEntity currentOrdersEntity = ((CurrentOrdersEntity) query.list().get(0));
             order.setBuffetID(currentOrdersEntity.getBuffetId());
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-M-yyyy hh:mm");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-M-yyyy HH:mm");
             order.setTime(dateFormat.parse(currentOrdersEntity.getDate()));
             query = session.createQuery("from OrdersEntity where orderId= :orderId");
             query.setParameter("orderId", orderID);

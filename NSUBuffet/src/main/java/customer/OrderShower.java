@@ -220,7 +220,7 @@ public class OrderShower
                 Month = calendar.get(Calendar.MONTH) + 1;
                 Year = calendar.get(Calendar.YEAR);
 
-                SimpleDateFormat dateFormat = new SimpleDateFormat("dd-M-yyyy hh:mm");
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd-M-yyyy HH:mm");
                 String strDate = Day + "-" + Month + "-" + Year + " " + hours.getText() + ":" + minutes.getText();
                 try
                 {
