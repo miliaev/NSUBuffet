@@ -1,7 +1,5 @@
 package server.view;
 
-import server.view.ItemStatisticShower;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -16,8 +14,10 @@ public class ServerShower
         JPanel mainPanel = new JPanel();
         JButton itemStatisticButton = new JButton("Посмотреть статистику товаров");
         JButton pairStatisticButton  = new JButton("Посмотреть парную статистику");
+        JButton categoryButton = new JButton("Посмотреть/добавить категорию");
         mainPanel.add(itemStatisticButton);
         mainPanel.add(pairStatisticButton);
+        mainPanel.add(categoryButton);
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800,600);
@@ -26,6 +26,7 @@ public class ServerShower
         frame.setVisible(true);
 
         addItemStatisticButton(itemStatisticButton);
+        addCategoryButton(categoryButton);
     }
 
     public void addItemStatisticButton(JButton itemStatisticButton)
@@ -39,6 +40,21 @@ public class ServerShower
                 {
                     //frame.setVisible(false);
                     new ItemStatisticShower();
+                }
+            }
+        });
+    }
+
+    public void addCategoryButton(JButton itemStatisticButton)
+    {
+        itemStatisticButton.addMouseListener(new MouseAdapter()
+        {
+            @Override
+            public void mouseReleased(MouseEvent e)
+            {
+                if (e.getButton() == MouseEvent.BUTTON1)
+                {
+                    new CategoryShower();
                 }
             }
         });
