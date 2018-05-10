@@ -11,6 +11,7 @@ public class BuffetEntity
     private String location;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "buffet_id", nullable = true)
     public Integer getBuffetId()
     {
