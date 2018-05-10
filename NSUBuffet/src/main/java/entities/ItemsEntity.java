@@ -13,6 +13,7 @@ public class ItemsEntity
     private Double currentPrice;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "item_id", nullable = true)
     public Integer getItemId()
     {

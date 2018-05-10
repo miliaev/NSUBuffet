@@ -16,12 +16,14 @@ public class ServerShower
         JButton categoryButton = new JButton("Посмотреть/добавить категорию");
         JButton buffetButton = new JButton("Посмотреть/добавить буффет");
         JButton topItemsButton = new JButton("Показать ТОП товаров");
+        JButton itemsButton = new JButton("Посмотреть/добавить товар");
 
         mainPanel.add(itemStatisticButton);
         mainPanel.add(pairStatisticButton);
         mainPanel.add(categoryButton);
         mainPanel.add(buffetButton);
         mainPanel.add(topItemsButton);
+        mainPanel.add(itemsButton);
 
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -34,6 +36,7 @@ public class ServerShower
         addCategoryButton(categoryButton);
         addBuffetButton(buffetButton);
         addTopItemsButton(topItemsButton);
+        addItemsButton(itemsButton);
     }
 
     private void addItemStatisticButton(JButton itemStatisticButton)
@@ -92,6 +95,21 @@ public class ServerShower
                 if (e.getButton() == MouseEvent.BUTTON1)
                 {
                     new TopItemsShower();
+                }
+            }
+        });
+    }
+
+    private void addItemsButton(JButton itemsButton)
+    {
+        itemsButton.addMouseListener(new MouseAdapter()
+        {
+            @Override
+            public void mouseReleased(MouseEvent e)
+            {
+                if (e.getButton() == MouseEvent.BUTTON1)
+                {
+                    new ItemsShower();
                 }
             }
         });
