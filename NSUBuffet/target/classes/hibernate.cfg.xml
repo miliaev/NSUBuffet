@@ -4,7 +4,7 @@
     "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
   <session-factory>
-    <property name="connection.url">jdbc:sqlite:src/main/resources/NSUBuffet_Database.db</property>
+    <property name="connection.url">jdbc:sqlite:NSUBuffet/src/main/resources/NSUBuffet_Database.db</property>
     <property name="connection.driver_class">org.sqlite.JDBC</property>
    <!-- <property name="hbm2ddl.auto">update</property>-->
     <property name="hibernate.dialect">database.SQLiteDialect</property>

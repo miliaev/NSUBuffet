@@ -13,14 +13,12 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
-public class BuffetShower
-{
+public class BuffetShower {
     private JFrame frame = new JFrame();
     private JTextField buffetName;
     private JScrollPane scrollPane;
 
-    public BuffetShower()
-    {
+    public BuffetShower() {
         JLabel buffetNameLabel = new JLabel("Добавление нового буффета");
         buffetName = new JTextField("Введите месторасположение нового буффета", 30);
         JButton buffetButton = new JButton("Добавить");
@@ -42,14 +40,13 @@ public class BuffetShower
 
         frame.getContentPane().add(newBuffetPanel, BorderLayout.CENTER);
         frame.getContentPane().add(scrollPane, BorderLayout.NORTH);
-        frame.setSize(400,300);
+        frame.setSize(400, 300);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
     }
 
-    private void init()
-    {
+    private void init() {
         SessionFactory sessionFactory = SessionFactorySingleton.getInstance().getSessionFactory();
 
         Session session = null;
@@ -69,8 +66,7 @@ public class BuffetShower
             List buffetNames = query.list();
 
             String[][] data = new String[buffetNames.size()][2];
-            for(int i = 0 ; i < buffetNames.size(); i++)
-            {
+            for (int i = 0; i < buffetNames.size(); i++) {
                 BuffetEntity buffetEntity = (BuffetEntity) buffetNames.get(i);
                 data[i][0] = String.valueOf(buffetEntity.getBuffetId());
                 data[i][1] = buffetEntity.getLocation();
@@ -92,45 +88,36 @@ public class BuffetShower
         }
     }
 
-    private void addBuffetButton(JButton buffetButton)
-    {
-        buffetButton.addMouseListener(new MouseAdapter()
-        {
+    private void addBuffetButton(JButton buffetButton) {
+        buffetButton.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseReleased(MouseEvent e)
-            {
-                if (e.getButton() == MouseEvent.BUTTON1)
-                {
-                    if(!buffetName.getText().equals("Введите месторасположение нового буффета")
-                            && !buffetName.getText().equals(""))
-                    {
+            public void mouseReleased(MouseEvent e) {
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                    if (!buffetName.getText().equals("Введите месторасположение нового буффета")
+                            && !buffetName.getText().equals("")) {
                         boolean changed = false;
                         SessionFactory sessionFactory = SessionFactorySingleton.getInstance().getSessionFactory();
 
                         Session session = null;
                         Transaction tx = null;
-                        try
-                        {
+                        try {
                             session = sessionFactory.openSession();
                             tx = session.beginTransaction();
                             Query query = session.createQuery("from BuffetEntity where location= :location");
                             query.setParameter("location", buffetName.getText());
-                            if(query.list().size() == 0)
-                            {
+                            if (query.list().size() == 0) {
                                 BuffetEntity buffetEntity = new BuffetEntity();
                                 buffetEntity.setLocation(buffetName.getText());
                                 session.save(buffetEntity);
                                 session.getTransaction().commit();
                                 buffetName.setText("");
                                 changed = true;
-                            }
-                            else {
+                            } else {
                                 JOptionPane.showMessageDialog(frame, new String[]{"Такой буффет уже существует"},
                                         "Добавление буффета", JOptionPane.INFORMATION_MESSAGE, null);
                             }
 
-                        }
-                        catch (Exception ex) {
+                        } catch (Exception ex) {
                             ex.printStackTrace();
                             JOptionPane.showMessageDialog(frame, new String[]{"Произошла ошибка при добавлении нового буффета"},
                                     "Добавление буффета", JOptionPane.INFORMATION_MESSAGE, null);
@@ -142,15 +129,13 @@ public class BuffetShower
                             }
                         }
 
-                        if(changed)
-                        {
+                        if (changed) {
                             frame.getContentPane().remove(scrollPane);
                             init();
                             frame.getContentPane().add(scrollPane, BorderLayout.NORTH);
                             frame.revalidate();
                         }
-                    }
-                    else {
+                    } else {
                         JOptionPane.showMessageDialog(frame, new String[]{"Введите название буффета"},
                                 "Добавление буффета", JOptionPane.INFORMATION_MESSAGE, null);
                     }

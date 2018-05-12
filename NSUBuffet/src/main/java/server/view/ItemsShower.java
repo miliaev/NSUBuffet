@@ -17,20 +17,20 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-public class ItemsShower
-{
+public class ItemsShower {
     private JFrame frame = new JFrame();
     private JTextField itemsName;
     private JTextField price;
     private JComboBox categoryList;
     private JScrollPane scrollPane;
 
-    public ItemsShower()
-    {
+    public ItemsShower() {
 
         JLabel addintionalItemsNameLabel = new JLabel("Добавление нового товара");
-        itemsName = new JTextField("Введите название товара", 30);
-        price = new JTextField("Введите цену", 30);
+        itemsName = new JTextField("", 30);
+        itemsName.setToolTipText("Введите название товара");
+        price = new JTextField("", 30);
+        price.setToolTipText("Введите цену");
         JButton categoryButton = new JButton("Добавить");
 
         JPanel newCategoryPanel = new JPanel();
@@ -53,15 +53,13 @@ public class ItemsShower
             List categories = query.list();
 
             String[] categoriesNames = new String[categories.size()];
-            for(int i = 0 ; i < categories.size(); i++)
-            {
+            for (int i = 0; i < categories.size(); i++) {
                 CategoryEntity categoryEntity = (CategoryEntity) categories.get(i);
                 categoriesNames[i] = categoryEntity.getName();
             }
-            categoryList =  new JComboBox(categoriesNames);
+            categoryList = new JComboBox<>(categoriesNames);
 
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
 
             tx.rollback();
@@ -74,12 +72,12 @@ public class ItemsShower
 
         JPanel itemsPanel = new JPanel();
         itemsPanel.setLayout(new GridLayout(3, 2));
-        itemsPanel.add( new JLabel("Навание:"));
-        itemsPanel.add( itemsName);
-        itemsPanel.add( new JLabel("Категория:"));
-        itemsPanel.add( categoryList);
-        itemsPanel.add( new JLabel("Цена:"));
-        itemsPanel.add( price);
+        itemsPanel.add(new JLabel("Навание:"));
+        itemsPanel.add(itemsName);
+        itemsPanel.add(new JLabel("Категория:"));
+        itemsPanel.add(categoryList);
+        itemsPanel.add(new JLabel("Цена:"));
+        itemsPanel.add(price);
         newCategoryPanel.add(itemsPanel, BorderLayout.CENTER);
         categoryButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -91,14 +89,13 @@ public class ItemsShower
 
         frame.getContentPane().add(newCategoryPanel, BorderLayout.CENTER);
         frame.getContentPane().add(scrollPane, BorderLayout.NORTH);
-        frame.setSize(600,400);
+        frame.setSize(600, 400);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
     }
 
-    private void init()
-    {
+    private void init() {
         SessionFactory sessionFactory = SessionFactorySingleton.getInstance().getSessionFactory();
 
         Session session = null;
@@ -120,8 +117,7 @@ public class ItemsShower
             List items = query.list();
 
             String[][] data = new String[items.size()][4];
-            for(int i = 0 ; i < items.size(); i++)
-            {
+            for (int i = 0; i < items.size(); i++) {
                 ItemsEntity itemsEntity = (ItemsEntity) items.get(i);
                 data[i][0] = String.valueOf(itemsEntity.getItemId());
 
@@ -150,40 +146,31 @@ public class ItemsShower
         }
     }
 
-    private void addCategoryButton(JButton categoryButton)
-    {
-        categoryButton.addMouseListener(new MouseAdapter()
-        {
+    private void addCategoryButton(JButton categoryButton) {
+        categoryButton.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseReleased(MouseEvent e)
-            {
-                if (e.getButton() == MouseEvent.BUTTON1)
-                {
-                    if(!itemsName.getText().equals("Введите название товара")
+            public void mouseReleased(MouseEvent e) {
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                    if (!itemsName.getText().equals("Введите название товара")
                             && !itemsName.getText().equals("")
                             && !price.getText().equals("Введите цену")
-                            && !price.getText().equals(""))
-                    {
+                            && !price.getText().equals("")) {
                         boolean changed = false;
                         SessionFactory sessionFactory = SessionFactorySingleton.getInstance().getSessionFactory();
 
                         Session session = null;
                         Transaction tx = null;
-                        try
-                        {
+                        try {
                             session = sessionFactory.openSession();
                             tx = session.beginTransaction();
                             Query query = session.createQuery("from ItemsEntity where name= :name");
                             query.setParameter("name", itemsName.getText());
-                            if(query.list().size() == 0)
-                            {
+                            if (query.list().size() == 0) {
                                 ItemsEntity itemsEntity = new ItemsEntity();
                                 itemsEntity.setName(itemsName.getText());
-                                try
-                                {
+                                try {
                                     double currentPrice = Double.parseDouble(price.getText());
-                                    if (currentPrice > 0)
-                                    {
+                                    if (currentPrice > 0) {
                                         query = session.createQuery("from CategoryEntity where name= :name");
                                         query.setParameter("name", categoryList.getSelectedItem());
                                         itemsEntity.setCategoryId(((CategoryEntity) query.list().get(0)).getCategoryId());
@@ -201,25 +188,20 @@ public class ItemsShower
                                         itemsName.setText("");
                                         price.setText("");
                                         changed = true;
-                                    } else
-                                    {
+                                    } else {
                                         JOptionPane.showMessageDialog(frame, new String[]{"Цена должна быть > 0"},
                                                 "Добавление товара", JOptionPane.INFORMATION_MESSAGE, null);
                                     }
-                                }
-                                catch (NumberFormatException ex)
-                                {
+                                } catch (NumberFormatException ex) {
                                     JOptionPane.showMessageDialog(frame, new String[]{"Введите число"},
                                             "ТОП товаров", JOptionPane.INFORMATION_MESSAGE, null);
                                 }
-                            }
-                            else {
+                            } else {
                                 JOptionPane.showMessageDialog(frame, new String[]{"Такой товар уже существует"},
                                         "Добавление товара", JOptionPane.INFORMATION_MESSAGE, null);
                             }
 
-                        }
-                        catch (Exception ex) {
+                        } catch (Exception ex) {
                             ex.printStackTrace();
                             JOptionPane.showMessageDialog(frame, new String[]{"Произошла ошибка при добавлении нового товара"},
                                     "Добавление товара", JOptionPane.INFORMATION_MESSAGE, null);
@@ -231,15 +213,13 @@ public class ItemsShower
                             }
                         }
 
-                        if(changed)
-                        {
+                        if (changed) {
                             frame.getContentPane().remove(scrollPane);
                             init();
                             frame.getContentPane().add(scrollPane, BorderLayout.NORTH);
                             frame.revalidate();
                         }
-                    }
-                    else {
+                    } else {
                         JOptionPane.showMessageDialog(frame, new String[]{"Заполните все данные"},
                                 "Добавление товара", JOptionPane.INFORMATION_MESSAGE, null);
                     }

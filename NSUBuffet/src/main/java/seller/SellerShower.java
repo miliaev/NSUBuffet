@@ -15,34 +15,29 @@ import java.util.Map;
  * Created by miketurch on 22.12.17.
  */
 
-public class SellerShower
-{
+public class SellerShower {
     private SellerShowerController sellerShowerController;
     private JFrame frame = new JFrame("Текущие заказы");
     JPanel mainPanel = new JPanel();
     JScrollPane scrollPane = new JScrollPane();
 
-    public SellerShower(SellerShowerController sellerShowerController)
-    {
+    public SellerShower(SellerShowerController sellerShowerController) {
         this.sellerShowerController = sellerShowerController;
     }
 
-    public void go()
-    {
+    public void go() {
         frame.add(scrollPane);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(200,600);
+        frame.setSize(200, 600);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
 
-    public void updateView(ArrayList<Order> orders)
-    {
+    public void updateView(ArrayList<Order> orders) {
         frame.remove(scrollPane);
 
         int totalItems = 0;
-        for(Order currentOrder: orders)
-        {
+        for (Order currentOrder : orders) {
             totalItems += currentOrder.getOrderItems().size();
         }
 
@@ -55,8 +50,7 @@ public class SellerShower
 
         int currentOrder = 0;
         int i = 0;
-        while(i < orders.size() * 3 + totalItems + orders.size() - 1)
-        {
+        while (i < orders.size() * 3 + totalItems + orders.size() - 1) {
             data[i][0] = "Order ID:";
             data[i++][1] = String.valueOf(orders.get(currentOrder).getId());
 
@@ -67,8 +61,7 @@ public class SellerShower
             data[i][0] = "Товар:";
             data[i++][1] = "Количество:";
 
-            for(Map.Entry<String, Integer> currentItem: orders.get(currentOrder).getOrderItems().entrySet())
-            {
+            for (Map.Entry<String, Integer> currentItem : orders.get(currentOrder).getOrderItems().entrySet()) {
                 data[i][0] = currentItem.getKey();
                 data[i++][1] = String.valueOf(currentItem.getValue());
             }

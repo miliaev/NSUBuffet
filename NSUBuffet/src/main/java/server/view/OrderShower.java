@@ -12,17 +12,16 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
-public class ItemStatisticShower {
+public class OrderShower {
     private JFrame frame = new JFrame();
     private JPanel mainPanel = new JPanel();
 
-    public ItemStatisticShower() {
+    public OrderShower() {
         JScrollPane scrollPane = new JScrollPane();
         String[] columnNames = {
-                "Товар",
-                "Количество",
-                "Буффет",
-                "Дата"
+                "Товар_1",
+                "Товар_2",
+                "Количество"
         };
 
         SessionFactory sessionFactory = SessionFactorySingleton.getInstance().getSessionFactory();
@@ -34,25 +33,21 @@ public class ItemStatisticShower {
             session = sessionFactory.openSession();
             tx = session.beginTransaction();
 
-            Query query = session.createQuery("from ItemStatisticEntity");
-            List itemsStatistic = query.list();
+            Query query = session.createQuery("from PairStatisticEntity");
+            List pairStatistic = query.list();
 
-            String[][] data = new String[itemsStatistic.size()][4];
-            for (int i = 0; i < itemsStatistic.size(); i++) {
-                ItemStatisticEntity itemStatisticEntity = (ItemStatisticEntity) itemsStatistic.get(i);
+            String[][] data = new String[pairStatistic.size()][3];
+            for (int i = 0; i < pairStatistic.size(); i++) {
+                PairStatisticEntity pairStatisticEntity = (PairStatisticEntity) pairStatistic.get(i);
                 query = session.createQuery("from ItemsEntity where itemId= :itemId");
-                query.setParameter("itemId", itemStatisticEntity.getItemId());
+                query.setParameter("itemId", pairStatisticEntity.getItem1Id());
                 ItemsEntity itemsEntity = (ItemsEntity) query.list().get(0);
                 data[i][0] = itemsEntity.getName();
-
-                data[i][1] = itemStatisticEntity.getCount().toString();
-
-                query = session.createQuery("from BuffetEntity where buffetId= :buffetId");
-                query.setParameter("buffetId", itemStatisticEntity.getBuffetId());
-                BuffetEntity buffetEntity = (BuffetEntity) query.list().get(0);
-                data[i][2] = buffetEntity.getLocation();
-
-                data[i][3] = itemStatisticEntity.getDate();
+                query = session.createQuery("from ItemsEntity where itemId= :itemId");
+                query.setParameter("itemId", pairStatisticEntity.getItem2Id());
+                itemsEntity = (ItemsEntity) query.list().get(0);
+                data[i][1] = itemsEntity.getName();
+                data[i][2] = pairStatisticEntity.getCount().toString();
             }
 
             JTable table = new JTable(data, columnNames);
@@ -75,6 +70,4 @@ public class ItemStatisticShower {
         frame.setVisible(true);
 
     }
-
-
 }

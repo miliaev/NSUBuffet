@@ -13,14 +13,12 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
-public class CategoryShower
-{
+public class CategoryShower {
     private JFrame frame = new JFrame();
     private JTextField categoryName;
     private JScrollPane scrollPane;
 
-    public CategoryShower()
-    {
+    public CategoryShower() {
 
         JLabel categoryNameLabel = new JLabel("Добавление новой категории");
         categoryName = new JTextField("Введите название новой категории", 30);
@@ -43,14 +41,13 @@ public class CategoryShower
 
         frame.getContentPane().add(newCategoryPanel, BorderLayout.CENTER);
         frame.getContentPane().add(scrollPane, BorderLayout.NORTH);
-        frame.setSize(400,300);
+        frame.setSize(400, 300);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
     }
 
-    private void init()
-    {
+    private void init() {
         SessionFactory sessionFactory = SessionFactorySingleton.getInstance().getSessionFactory();
 
         Session session = null;
@@ -70,8 +67,7 @@ public class CategoryShower
             List categoryNames = query.list();
 
             String[][] data = new String[categoryNames.size()][2];
-            for(int i = 0 ; i < categoryNames.size(); i++)
-            {
+            for (int i = 0; i < categoryNames.size(); i++) {
                 CategoryEntity categoryEntity = (CategoryEntity) categoryNames.get(i);
                 data[i][0] = String.valueOf(categoryEntity.getCategoryId());
                 data[i][1] = categoryEntity.getName();
@@ -93,45 +89,36 @@ public class CategoryShower
         }
     }
 
-    private void addCategoryButton(JButton categoryButton)
-    {
-        categoryButton.addMouseListener(new MouseAdapter()
-        {
+    private void addCategoryButton(JButton categoryButton) {
+        categoryButton.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseReleased(MouseEvent e)
-            {
-                if (e.getButton() == MouseEvent.BUTTON1)
-                {
-                    if(!categoryName.getText().equals("Введите название новой категории")
-                            && !categoryName.getText().equals(""))
-                    {
+            public void mouseReleased(MouseEvent e) {
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                    if (!categoryName.getText().equals("Введите название новой категории")
+                            && !categoryName.getText().equals("")) {
                         boolean changed = false;
                         SessionFactory sessionFactory = SessionFactorySingleton.getInstance().getSessionFactory();
 
                         Session session = null;
                         Transaction tx = null;
-                        try
-                        {
+                        try {
                             session = sessionFactory.openSession();
                             tx = session.beginTransaction();
                             Query query = session.createQuery("from CategoryEntity where name= :name");
                             query.setParameter("name", categoryName.getText());
-                            if(query.list().size() == 0)
-                            {
+                            if (query.list().size() == 0) {
                                 CategoryEntity categoryEntity = new CategoryEntity();
                                 categoryEntity.setName(categoryName.getText());
                                 session.save(categoryEntity);
                                 session.getTransaction().commit();
                                 categoryName.setText("");
                                 changed = true;
-                            }
-                            else {
+                            } else {
                                 JOptionPane.showMessageDialog(frame, new String[]{"Такая категория уже существует"},
                                         "Добавление категории", JOptionPane.INFORMATION_MESSAGE, null);
                             }
 
-                        }
-                        catch (Exception ex) {
+                        } catch (Exception ex) {
                             ex.printStackTrace();
                             JOptionPane.showMessageDialog(frame, new String[]{"Произошла ошибка при добавлении новой категории"},
                                     "Добавление категории", JOptionPane.INFORMATION_MESSAGE, null);
@@ -143,15 +130,13 @@ public class CategoryShower
                             }
                         }
 
-                        if(changed)
-                        {
+                        if (changed) {
                             frame.getContentPane().remove(scrollPane);
                             init();
                             frame.getContentPane().add(scrollPane, BorderLayout.NORTH);
                             frame.revalidate();
                         }
-                    }
-                    else {
+                    } else {
                         JOptionPane.showMessageDialog(frame, new String[]{"Введите название категории"},
                                 "Добавление категории", JOptionPane.INFORMATION_MESSAGE, null);
                     }
