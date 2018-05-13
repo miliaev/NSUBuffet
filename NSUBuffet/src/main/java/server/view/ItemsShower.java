@@ -72,10 +72,10 @@ public class ItemsShower {
 
         JPanel itemsPanel = new JPanel();
         itemsPanel.setLayout(new GridLayout(3, 2));
-        itemsPanel.add(new JLabel("Навание:"));
-        itemsPanel.add(itemsName);
         itemsPanel.add(new JLabel("Категория:"));
         itemsPanel.add(categoryList);
+        itemsPanel.add(new JLabel("Название:"));
+        itemsPanel.add(itemsName);
         itemsPanel.add(new JLabel("Цена:"));
         itemsPanel.add(price);
         newCategoryPanel.add(itemsPanel, BorderLayout.CENTER);
@@ -104,7 +104,6 @@ public class ItemsShower {
         try {
 
             String[] columnNames = {
-                    "ID",
                     "Категория",
                     "Название",
                     "Цена"
@@ -116,18 +115,17 @@ public class ItemsShower {
             Query query = session.createQuery("from ItemsEntity");
             List items = query.list();
 
-            String[][] data = new String[items.size()][4];
+            String[][] data = new String[items.size()][3];
             for (int i = 0; i < items.size(); i++) {
                 ItemsEntity itemsEntity = (ItemsEntity) items.get(i);
-                data[i][0] = String.valueOf(itemsEntity.getItemId());
 
                 query = session.createQuery("from CategoryEntity where categoryId= :categoryId");
                 query.setParameter("categoryId", itemsEntity.getCategoryId());
                 CategoryEntity categoryEntity = (CategoryEntity) query.list().get(0);
-                data[i][1] = categoryEntity.getName();
+                data[i][0] = categoryEntity.getName();
 
-                data[i][2] = itemsEntity.getName();
-                data[i][3] = String.valueOf(itemsEntity.getCurrentPrice());
+                data[i][1] = itemsEntity.getName();
+                data[i][2] = String.valueOf(itemsEntity.getCurrentPrice());
             }
 
             JTable table = new JTable(data, columnNames);
