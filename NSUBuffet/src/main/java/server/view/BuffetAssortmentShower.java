@@ -123,13 +123,7 @@ public class BuffetAssortmentShower {
             }
             model = new DefaultComboBoxModel<>(buffetsNames);
             buffetList.setModel(model);
-
-            buffetList.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    init();
-                }
-            });
+            buffetList.addActionListener(e -> init());
 
         } catch (Exception ex) {
             ex.printStackTrace();

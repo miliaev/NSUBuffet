@@ -1,6 +1,7 @@
 package server.view;
 
 import database.SessionFactorySingleton;
+import entities.BuffetEntity;
 import entities.CategoryEntity;
 import entities.ItemsEntity;
 import entities.PriceEntity;
@@ -47,7 +48,40 @@ public class PriceShower {
         Transaction tx = null;
 
         categoryList = new JComboBox();
+        categoryList.addActionListener(e -> {
+            Session innerSession = null;
+            Transaction innerTx = null;
+            try {
+
+                innerSession = sessionFactory.openSession();
+                innerTx = innerSession.beginTransaction();
+                Query innerQuery = innerSession.createQuery("from CategoryEntity where name= :name");
+                innerQuery.setParameter("name", categoryList.getSelectedItem());
+                CategoryEntity categoryEntity = (CategoryEntity) innerQuery.list().get(0);
+                innerQuery = innerSession.createQuery("from ItemsEntity where categoryId= :categoryId");
+                innerQuery.setParameter("categoryId", categoryEntity.getCategoryId());
+                List items = innerQuery.list();
+
+                String[] itemsNames = new String[items.size()];
+                for (int i = 0; i < items.size(); i++) {
+                    ItemsEntity itemsEntity = (ItemsEntity) items.get(i);
+                    itemsNames[i] = itemsEntity.getName();
+                }
+                DefaultComboBoxModel<String> innerModel = new DefaultComboBoxModel<>(itemsNames);
+                itemList.setModel(innerModel);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+
+                innerTx.rollback();
+            } finally {
+                if (innerSession != null) {
+                    innerSession.close();
+                }
+            }
+            init();
+        });
         itemList = new JComboBox();
+        itemList.addActionListener(e -> init());
         try {
 
             session = sessionFactory.openSession();
@@ -63,38 +97,6 @@ public class PriceShower {
             }
             DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(categoriesNames);
             categoryList.setModel(model);
-
-            categoryList.addActionListener(e -> {
-                Session innerSession = null;
-                Transaction innerTx = null;
-                try {
-
-                    innerSession = sessionFactory.openSession();
-                    innerTx = innerSession.beginTransaction();
-                    Query innerQuery = innerSession.createQuery("from CategoryEntity where name= :name");
-                    innerQuery.setParameter("name", categoryList.getSelectedItem());
-                    CategoryEntity categoryEntity = (CategoryEntity) innerQuery.list().get(0);
-                    innerQuery = innerSession.createQuery("from ItemsEntity where categoryId= :categoryId");
-                    innerQuery.setParameter("categoryId", categoryEntity.getCategoryId());
-                    List items = innerQuery.list();
-
-                    String[] itemsNames = new String[items.size()];
-                    for (int i = 0; i < items.size(); i++) {
-                        ItemsEntity itemsEntity = (ItemsEntity) items.get(i);
-                        itemsNames[i] = itemsEntity.getName();
-                    }
-                    DefaultComboBoxModel<String> innerModel = new DefaultComboBoxModel<>(itemsNames);
-                    itemList.setModel(innerModel);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-
-                    innerTx.rollback();
-                } finally {
-                    if (innerSession != null) {
-                        innerSession.close();
-                    }
-                }
-            });
 
             query = session.createQuery("from CategoryEntity where name= :name");
             query.setParameter("name", categoryList.getSelectedItem());
@@ -155,28 +157,25 @@ public class PriceShower {
         try {
 
             String[] columnNames = {
-                    "Категория",
-                    "Название",
+                    "Дата",
                     "Цена"
             };
 
             session = sessionFactory.openSession();
             tx = session.beginTransaction();
 
-            Query query = session.createQuery("from ItemsEntity");
-            List items = query.list();
+            Query query = session.createQuery("from ItemsEntity where name= :name");
+            query.setParameter("name", itemList.getSelectedItem());
+            ItemsEntity itemsEntity = (ItemsEntity) query.list().get(0);
+            query = session.createQuery("from PriceEntity where itemId= :itemId");
+            query.setParameter("itemId", itemsEntity.getItemId());
+            List prices = query.list();
 
-            String[][] data = new String[items.size()][3];
-            for (int i = 0; i < items.size(); i++) {
-                ItemsEntity itemsEntity = (ItemsEntity) items.get(i);
-
-                query = session.createQuery("from CategoryEntity where categoryId= :categoryId");
-                query.setParameter("categoryId", itemsEntity.getCategoryId());
-                CategoryEntity categoryEntity = (CategoryEntity) query.list().get(0);
-                data[i][0] = categoryEntity.getName();
-
-                data[i][1] = itemsEntity.getName();
-                data[i][2] = String.valueOf(itemsEntity.getCurrentPrice());
+            String[][] data = new String[prices.size()][2];
+            for (int i = 0; i < prices.size(); i++) {
+                PriceEntity priceEntity = (PriceEntity) prices.get(i);
+                data[i][0] = priceEntity.getDate();
+                data[i][1] = String.valueOf(priceEntity.getPrice());
             }
             DefaultTableModel tableModel = new DefaultTableModel(data, columnNames);
             itemsTable.setModel(tableModel);
