@@ -12,11 +12,12 @@ public class ServerShower {
         JButton itemStatisticButton = new JButton("Посмотреть статистику товаров");
         JButton pairStatisticButton = new JButton("Посмотреть парную статистику");
         JButton categoryButton = new JButton("Посмотреть/добавить категорию");
-        JButton buffetButton = new JButton("Посмотреть/добавить буффет");
+        JButton buffetButton = new JButton("Посмотреть/добавить буфет");
         JButton topItemsButton = new JButton("Показать ТОП товаров");
         JButton itemsButton = new JButton("Посмотреть/добавить товар");
         JButton buffetAssortmentButton = new JButton("Посмотреть/добавить ассортимент в буфет");
         JButton priceButton = new JButton("Посмотреть/изменить цены на товары");
+        JButton ordersButton = new JButton("Посмотреть заказы");
 
         mainPanel.add(itemStatisticButton);
         mainPanel.add(pairStatisticButton);
@@ -26,6 +27,7 @@ public class ServerShower {
         mainPanel.add(itemsButton);
         mainPanel.add(buffetAssortmentButton);
         mainPanel.add(priceButton);
+        mainPanel.add(ordersButton);
 
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -42,6 +44,7 @@ public class ServerShower {
         addItemsButton(itemsButton);
         addBuffetAssortment(buffetAssortmentButton);
         addPriceButton(priceButton);
+        addOrderButton(ordersButton);
     }
 
     private void addItemStatisticButton(JButton itemStatisticButton) {
@@ -129,6 +132,16 @@ public class ServerShower {
             public void mouseReleased(MouseEvent e) {
                 if (e.getButton() == MouseEvent.BUTTON1) {
                     new PriceShower();
+                }
+            }
+        });
+    }
+    private void addOrderButton(JButton orderButton) {
+        orderButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                    new OrderShower();
                 }
             }
         });

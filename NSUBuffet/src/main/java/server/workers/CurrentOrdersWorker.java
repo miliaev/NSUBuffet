@@ -39,20 +39,6 @@ public class CurrentOrdersWorker implements Parser {
     }
 
     private void addNewOrder() {
-//        try {
-//            //ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
-//            buffetOutputStreams.get(order.getBuffetID() - 1).writeObject(new RequestBuilder().needUpdateView());
-////            buffetOutputStreams.get(order.getBuffetID() - 1).writeObject(currentOrders.getCurrentOrders(order.getBuffetID() - 1));
-//            System.out.println("sent to seller");
-////            buffetOutputStreams.get(order.getBuffetID()).
-//            //ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-//            //System.out.println(currentAssortment.getCurrentItems(buffetId - 1).toString());
-//            //writer.writeObject(currentAssortment.getCurrentItems(buffetId - 1));
-//            //writer.flush();
-//        } catch (IOException | ClassNotFoundException e) {
-//            e.printStackTrace();
-//        }
-
         SessionFactory sessionFactory = SessionFactorySingleton.getInstance().getSessionFactory();
 
         Session session = null;
@@ -203,7 +189,6 @@ public class CurrentOrdersWorker implements Parser {
             if (query.executeUpdate() > 0) {
                 System.out.println("deleted");
             }
-//            session.delete(query.list().get(0));
             ArrayList<Order> orders = getOrdersForBuffet(buffetId, session);
             session.getTransaction().commit();
             buffetOutputStreams.get(buffetId - 1).writeObject(new RequestBuilder().needUpdateView());

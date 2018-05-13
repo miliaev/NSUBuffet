@@ -8,6 +8,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -17,11 +18,16 @@ public class CategoryShower {
     private JFrame frame = new JFrame();
     private JTextField categoryName;
     private JScrollPane scrollPane;
+    private JTable categoryTable;
 
     public CategoryShower() {
+        categoryTable = new JTable();
+        scrollPane = new JScrollPane(categoryTable);
+        scrollPane.setPreferredSize(new Dimension(400, 200));
 
         JLabel categoryNameLabel = new JLabel("Добавление новой категории");
-        categoryName = new JTextField("Введите название новой категории", 30);
+        categoryName = new JTextField(30);
+        categoryName.setToolTipText("Введите название новой категории");
         JButton categoryButton = new JButton("Добавить");
 
         JPanel newCategoryPanel = new JPanel();
@@ -56,8 +62,7 @@ public class CategoryShower {
         try {
 
             String[] columnNames = {
-                    "ID",
-                    "Название"
+                    "Категории"
             };
 
             session = sessionFactory.openSession();
@@ -66,17 +71,14 @@ public class CategoryShower {
             Query query = session.createQuery("from CategoryEntity");
             List categoryNames = query.list();
 
-            String[][] data = new String[categoryNames.size()][2];
+            String[][] data = new String[categoryNames.size()][1];
             for (int i = 0; i < categoryNames.size(); i++) {
                 CategoryEntity categoryEntity = (CategoryEntity) categoryNames.get(i);
-                data[i][0] = String.valueOf(categoryEntity.getCategoryId());
-                data[i][1] = categoryEntity.getName();
+                data[i][0] = categoryEntity.getName();
             }
-
-            JTable table = new JTable(data, columnNames);
-            table.setEnabled(false);
-            scrollPane = new JScrollPane(table);
-            scrollPane.setPreferredSize(new Dimension(400, 200));
+            DefaultTableModel tableModel = new DefaultTableModel(data, columnNames);
+            categoryTable.setModel(tableModel);
+            categoryTable.setEnabled(false);
 
         } catch (Exception ex) {
             ex.printStackTrace();

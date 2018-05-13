@@ -26,7 +26,7 @@ public class ItemsShower {
 
     public ItemsShower() {
 
-        JLabel addintionalItemsNameLabel = new JLabel("Добавление нового товара");
+        JLabel additionalItemsNameLabel = new JLabel("Добавление нового товара");
         itemsName = new JTextField("", 30);
         itemsName.setToolTipText("Введите название товара");
         price = new JTextField("", 30);
@@ -35,8 +35,8 @@ public class ItemsShower {
 
         JPanel newCategoryPanel = new JPanel();
         newCategoryPanel.setLayout(new BoxLayout(newCategoryPanel, BoxLayout.Y_AXIS));
-        addintionalItemsNameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        newCategoryPanel.add(addintionalItemsNameLabel);
+        additionalItemsNameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        newCategoryPanel.add(additionalItemsNameLabel);
 
         SessionFactory sessionFactory = SessionFactorySingleton.getInstance().getSessionFactory();
 

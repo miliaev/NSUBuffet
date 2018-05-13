@@ -14,14 +14,13 @@ import java.util.List;
 
 public class ItemStatisticShower {
     private JFrame frame = new JFrame();
-    private JPanel mainPanel = new JPanel();
 
     public ItemStatisticShower() {
         JScrollPane scrollPane = new JScrollPane();
         String[] columnNames = {
                 "Товар",
                 "Количество",
-                "Буффет",
+                "Буфет",
                 "Дата"
         };
 

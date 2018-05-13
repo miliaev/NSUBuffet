@@ -14,14 +14,14 @@ import java.util.List;
 
 public class OrderShower {
     private JFrame frame = new JFrame();
-    private JPanel mainPanel = new JPanel();
 
     public OrderShower() {
         JScrollPane scrollPane = new JScrollPane();
         String[] columnNames = {
-                "Товар_1",
-                "Товар_2",
-                "Количество"
+                "ID заказа",
+                "Товар",
+                "Количество",
+                "Стоимость"
         };
 
         SessionFactory sessionFactory = SessionFactorySingleton.getInstance().getSessionFactory();
@@ -33,21 +33,19 @@ public class OrderShower {
             session = sessionFactory.openSession();
             tx = session.beginTransaction();
 
-            Query query = session.createQuery("from PairStatisticEntity");
-            List pairStatistic = query.list();
+            Query query = session.createQuery("from OrdersEntity");
+            List orders = query.list();
 
-            String[][] data = new String[pairStatistic.size()][3];
-            for (int i = 0; i < pairStatistic.size(); i++) {
-                PairStatisticEntity pairStatisticEntity = (PairStatisticEntity) pairStatistic.get(i);
+            String[][] data = new String[orders.size()][4];
+            for (int i = 0; i < orders.size(); i++) {
+                OrdersEntity ordersEntity = (OrdersEntity) orders.get(i);
                 query = session.createQuery("from ItemsEntity where itemId= :itemId");
-                query.setParameter("itemId", pairStatisticEntity.getItem1Id());
+                query.setParameter("itemId", ordersEntity.getItemId());
                 ItemsEntity itemsEntity = (ItemsEntity) query.list().get(0);
-                data[i][0] = itemsEntity.getName();
-                query = session.createQuery("from ItemsEntity where itemId= :itemId");
-                query.setParameter("itemId", pairStatisticEntity.getItem2Id());
-                itemsEntity = (ItemsEntity) query.list().get(0);
+                data[i][0] = String.valueOf(ordersEntity.getOrderId());
                 data[i][1] = itemsEntity.getName();
-                data[i][2] = pairStatisticEntity.getCount().toString();
+                data[i][2] = String.valueOf(ordersEntity.getAmount());
+                data[i][3] = String.valueOf(ordersEntity.getPrice());
             }
 
             JTable table = new JTable(data, columnNames);

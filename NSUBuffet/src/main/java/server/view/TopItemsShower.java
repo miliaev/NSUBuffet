@@ -24,7 +24,8 @@ public class TopItemsShower
     public TopItemsShower()
     {
         JLabel limitLabel = new JLabel("Показать ТОП N товаров:");
-        limit = new JTextField("Введите N", 30);
+        limit = new JTextField(30);
+        limit.setToolTipText("Введите N");
         JButton limitButton = new JButton("Применить");
 
         JPanel newBuffetPanel = new JPanel();

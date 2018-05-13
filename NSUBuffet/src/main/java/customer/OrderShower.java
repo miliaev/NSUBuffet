@@ -128,8 +128,10 @@ public class OrderShower
         JLabel chooseTime = new JLabel("Укажите время:");
         currentBuffetPanel.add(chooseTime);
 
-        hours = new JTextField("Часы");
-        minutes = new JTextField("Минуты");
+        hours = new JTextField();
+        hours.setToolTipText("Часы");
+        minutes = new JTextField();
+        minutes.setToolTipText("Минуты");
         currentBuffetPanel.add(hours);
         currentBuffetPanel.add(minutes);
 
