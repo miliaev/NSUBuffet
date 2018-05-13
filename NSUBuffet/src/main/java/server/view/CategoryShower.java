@@ -96,8 +96,7 @@ public class CategoryShower {
             @Override
             public void mouseReleased(MouseEvent e) {
                 if (e.getButton() == MouseEvent.BUTTON1) {
-                    if (!categoryName.getText().equals("Введите название новой категории")
-                            && !categoryName.getText().equals("")) {
+                    if (!categoryName.getText().equals("")) {
                         boolean changed = false;
                         SessionFactory sessionFactory = SessionFactorySingleton.getInstance().getSessionFactory();
 

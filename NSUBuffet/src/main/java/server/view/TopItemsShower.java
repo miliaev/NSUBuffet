@@ -13,16 +13,14 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
-public class TopItemsShower
-{
+public class TopItemsShower {
     private JFrame frame = new JFrame();
     private JTextField limit;
     private JScrollPane scrollPane;
 
     private static final int DEFAULT_LIMIT = 100;
 
-    public TopItemsShower()
-    {
+    public TopItemsShower() {
         JLabel limitLabel = new JLabel("Показать ТОП N товаров:");
         limit = new JTextField(30);
         limit.setToolTipText("Введите N");
@@ -45,14 +43,13 @@ public class TopItemsShower
 
         frame.getContentPane().add(newBuffetPanel, BorderLayout.CENTER);
         frame.getContentPane().add(scrollPane, BorderLayout.NORTH);
-        frame.setSize(400,300);
+        frame.setSize(400, 300);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
     }
 
-    private void init(int currentLimit)
-    {
+    private void init(int currentLimit) {
         SessionFactory sessionFactory = SessionFactorySingleton.getInstance().getSessionFactory();
 
         Session session = null;
@@ -70,15 +67,14 @@ public class TopItemsShower
 
             Query query = session.createSQLQuery(
                     "SELECT item_id, SUM(count) " +
-                       "FROM ItemStatistic " +
-                       "GROUP BY item_id " +
-                       "ORDER BY SUM(count) DESC " +
-                       "LIMIT :currentLimit").setInteger("currentLimit", currentLimit);
+                            "FROM ItemStatistic " +
+                            "GROUP BY item_id " +
+                            "ORDER BY SUM(count) DESC " +
+                            "LIMIT :currentLimit").setInteger("currentLimit", currentLimit);
             List topItems = query.list();
 
             String[][] data = new String[topItems.size()][2];
-            for(int i = 0 ; i < topItems.size(); i++)
-            {
+            for (int i = 0; i < topItems.size(); i++) {
                 Object[] row = (Object[]) topItems.get(i);
                 query = session.createQuery("from ItemsEntity where itemId= :itemId");
                 query.setParameter("itemId", row[0]);
@@ -103,40 +99,28 @@ public class TopItemsShower
         }
     }
 
-    private void addBuffetButton(JButton limitButton)
-    {
-        limitButton.addMouseListener(new MouseAdapter()
-        {
+    private void addBuffetButton(JButton limitButton) {
+        limitButton.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseReleased(MouseEvent e)
-            {
-                if (e.getButton() == MouseEvent.BUTTON1)
-                {
-                    if(!limit.getText().equals("Введите N") && !limit.getText().equals(""))
-                    {
-                        try
-                        {
+            public void mouseReleased(MouseEvent e) {
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                    if (!limit.getText().equals("")) {
+                        try {
                             int currentLimit = Integer.parseInt(limit.getText());
-                            if(currentLimit > 0)
-                            {
+                            if (currentLimit > 0) {
                                 frame.getContentPane().remove(scrollPane);
                                 init(currentLimit);
                                 frame.getContentPane().add(scrollPane, BorderLayout.NORTH);
                                 frame.revalidate();
-                            }
-                            else
-                            {
+                            } else {
                                 JOptionPane.showMessageDialog(frame, new String[]{"Введите натуральное число"},
                                         "ТОП товаров", JOptionPane.INFORMATION_MESSAGE, null);
                             }
-                        }
-                        catch (NumberFormatException ex)
-                        {
+                        } catch (NumberFormatException ex) {
                             JOptionPane.showMessageDialog(frame, new String[]{"Введите число"},
                                     "ТОП товаров", JOptionPane.INFORMATION_MESSAGE, null);
                         }
-                    }
-                    else {
+                    } else {
                         JOptionPane.showMessageDialog(frame, new String[]{"Введите N"},
                                 "ТОП товаров", JOptionPane.INFORMATION_MESSAGE, null);
                     }

@@ -96,8 +96,7 @@ public class BuffetShower {
             @Override
             public void mouseReleased(MouseEvent e) {
                 if (e.getButton() == MouseEvent.BUTTON1) {
-                    if (!buffetName.getText().equals("Введите месторасположение нового буфета")
-                            && !buffetName.getText().equals("")) {
+                    if (!buffetName.getText().equals("")) {
                         boolean changed = false;
                         SessionFactory sessionFactory = SessionFactorySingleton.getInstance().getSessionFactory();
 

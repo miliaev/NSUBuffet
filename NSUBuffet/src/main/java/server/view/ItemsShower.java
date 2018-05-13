@@ -1,6 +1,7 @@
 package server.view;
 
 import database.SessionFactorySingleton;
+import entities.BuffetEntity;
 import entities.CategoryEntity;
 import entities.ItemsEntity;
 import entities.PriceEntity;
@@ -10,6 +11,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -23,9 +25,12 @@ public class ItemsShower {
     private JTextField price;
     private JComboBox categoryList;
     private JScrollPane scrollPane;
+    private JTable itemsTable;
 
     public ItemsShower() {
-
+        itemsTable = new JTable();
+        scrollPane = new JScrollPane(itemsTable);
+        scrollPane.setPreferredSize(new Dimension(400, 200));
         JLabel additionalItemsNameLabel = new JLabel("Добавление нового товара");
         itemsName = new JTextField("", 30);
         itemsName.setToolTipText("Введите название товара");
@@ -44,6 +49,9 @@ public class ItemsShower {
         Transaction tx = null;
 
         categoryList = new JComboBox();
+        categoryList.addActionListener(e -> {
+            init();
+        });
         try {
 
             session = sessionFactory.openSession();
@@ -57,7 +65,8 @@ public class ItemsShower {
                 CategoryEntity categoryEntity = (CategoryEntity) categories.get(i);
                 categoriesNames[i] = categoryEntity.getName();
             }
-            categoryList = new JComboBox<>(categoriesNames);
+            DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(categoriesNames);
+            categoryList.setModel(model);
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -104,7 +113,6 @@ public class ItemsShower {
         try {
 
             String[] columnNames = {
-                    "Категория",
                     "Название",
                     "Цена"
             };
@@ -112,27 +120,21 @@ public class ItemsShower {
             session = sessionFactory.openSession();
             tx = session.beginTransaction();
 
-            Query query = session.createQuery("from ItemsEntity");
+            Query query = session.createQuery("from CategoryEntity where name= :name");
+            query.setParameter("name", categoryList.getSelectedItem());
+            CategoryEntity categoryEntity = (CategoryEntity) query.list().get(0);
+            query = session.createQuery("from ItemsEntity where categoryId= :categoryId");
+            query.setParameter("categoryId", categoryEntity.getCategoryId());
             List items = query.list();
-
-            String[][] data = new String[items.size()][3];
+            String[][] data = new String[items.size()][2];
             for (int i = 0; i < items.size(); i++) {
                 ItemsEntity itemsEntity = (ItemsEntity) items.get(i);
-
-                query = session.createQuery("from CategoryEntity where categoryId= :categoryId");
-                query.setParameter("categoryId", itemsEntity.getCategoryId());
-                CategoryEntity categoryEntity = (CategoryEntity) query.list().get(0);
-                data[i][0] = categoryEntity.getName();
-
-                data[i][1] = itemsEntity.getName();
-                data[i][2] = String.valueOf(itemsEntity.getCurrentPrice());
+                data[i][0] = itemsEntity.getName();
+                data[i][1] = String.valueOf(itemsEntity.getCurrentPrice());
             }
-
-            JTable table = new JTable(data, columnNames);
-            table.setEnabled(false);
-            scrollPane = new JScrollPane(table);
-            scrollPane.setPreferredSize(new Dimension(400, 200));
-
+            DefaultTableModel tableModel = new DefaultTableModel(data, columnNames);
+            itemsTable.setModel(tableModel);
+            itemsTable.setEnabled(false);
         } catch (Exception ex) {
             ex.printStackTrace();
 
@@ -149,9 +151,7 @@ public class ItemsShower {
             @Override
             public void mouseReleased(MouseEvent e) {
                 if (e.getButton() == MouseEvent.BUTTON1) {
-                    if (!itemsName.getText().equals("Введите название товара")
-                            && !itemsName.getText().equals("")
-                            && !price.getText().equals("Введите цену")
+                    if (!itemsName.getText().equals("")
                             && !price.getText().equals("")) {
                         boolean changed = false;
                         SessionFactory sessionFactory = SessionFactorySingleton.getInstance().getSessionFactory();
