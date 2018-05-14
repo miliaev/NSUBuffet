@@ -2,15 +2,13 @@ package server.view;
 
 import database.SessionFactorySingleton;
 import entities.ItemsEntity;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
+import org.hibernate.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.SQLOutput;
 import java.util.List;
 
 public class TopItemsShower {
@@ -71,16 +69,24 @@ public class TopItemsShower {
                             "GROUP BY item_id " +
                             "ORDER BY SUM(count) DESC " +
                             "LIMIT :currentLimit").setInteger("currentLimit", currentLimit);
-            List topItems = query.list();
-
-            String[][] data = new String[topItems.size()][2];
-            for (int i = 0; i < topItems.size(); i++) {
-                Object[] row = (Object[]) topItems.get(i);
-                query = session.createQuery("from ItemsEntity where itemId= :itemId");
-                query.setParameter("itemId", row[0]);
-                ItemsEntity itemsEntity = (ItemsEntity) query.list().get(0);
-                data[i][0] = itemsEntity.getName();
-                data[i][1] = String.valueOf(row[1]);
+            String[][] data = new String[0][0];
+            try
+            {
+                List topItems = query.list();
+                data = new String[topItems.size()][2];
+                for (int i = 0; i < topItems.size(); i++)
+                {
+                    Object[] row = (Object[]) topItems.get(i);
+                    query = session.createQuery("from ItemsEntity where itemId= :itemId");
+                    query.setParameter("itemId", row[0]);
+                    ItemsEntity itemsEntity = (ItemsEntity) query.list().get(0);
+                    data[i][0] = itemsEntity.getName();
+                    data[i][1] = String.valueOf(row[1]);
+                }
+            }
+            catch (MappingException ex)
+            {
+                System.out.println("Empty statistic");
             }
 
             JTable table = new JTable(data, columnNames);
